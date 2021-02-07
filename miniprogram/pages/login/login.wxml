@@ -1,0 +1,9 @@
+<!--miniprogram/pages/login/login.wxml-->
+
+<view class="container">
+  <i-input value="{{ name }}" title="用户名" autofocus placeholder="请输入用户名" />
+  <i-input value="{{ password }}" type="password" title="密码" placeholder="请输入密码" />
+  <i-button bind:click="handleClick" type="primary">Primary</i-button>
+  <i-button bind:click="handleClick" type="warning">Warning</i-button>
+  <i-button bind:click="handleClick" type="error">Error</i-button>
+</view>
