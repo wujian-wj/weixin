@@ -146,7 +146,9 @@ Page({
       }
     })
   },
+  
   onGetUserInfo: function(e) {
+    console.log(e,1)
     if (!this.data.logged && e.detail.userInfo) {
       this.setData({
         logged: true,
@@ -158,19 +160,20 @@ Page({
         data: {},
         success: res => {
           app.globalData.openid = res.result.openid
-          db.collection('user').add({
-            // data 字段表示需新增的 JSON 数据
-            data: {
-                openid:res.result.openid,
-                country:e.detail.userInfo.country,
-                city:e.detail.userInfo.city,
-                gender:e.detail.userInfo.gender,
-                nickName:e.detail.userInfo.nickName,
-                province:e.detail.userInfo.province
-            },
+          db.collection('user').where({
+            _openid: res.result.openid
+          }).get({
             success: function(res) {
-              // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
-              console.log(res)
+              // res.data 包含该记录的数据
+              if(res.data.length>0){
+                wx.navigateTo({
+                  url: '../home/home',
+                })
+              }else{
+                wx.navigateTo({
+                  url: '../login/login',
+                })
+              }
             }
           })
         },

@@ -1,6 +1,7 @@
 // miniprogram/pages/login/login.js
-Page({
+const db = wx.cloud.database()
 
+Page({
   /**
    * 页面的初始数据
    */
@@ -8,7 +9,55 @@ Page({
     name:'',
     password:''
   },
+  inputChange(e){
+    console.log(e)
+    this.setData({
+      name:e.detail.detail.value
+    })
+  },
+  passwordChange(e){
+    this.setData({
+      password:e.detail.detail.value
+    })
+  },
   handleClick(){
+
+  },
+  bindGetUserInfo: function(e) {
+    console.log(e,1)
+    let that = this
+    if (e.detail.userInfo) {
+      wx.cloud.callFunction({
+        name: 'login',
+        data: {},
+        success: res => {
+          db.collection('user').add({
+            // data 字段表示需新增的 JSON 数据
+            data: {
+                country:e.detail.userInfo.country,
+                city:e.detail.userInfo.city,
+                gender:e.detail.userInfo.gender,
+                nickName:e.detail.userInfo.nickName,
+                province:e.detail.userInfo.province,
+                userName:that.data.name,
+                password:that.data.password
+            },
+            success: function(res) {
+              // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
+              wx.navigateTo({
+                url: '../index/index',
+              })
+            }
+          })
+        },
+        fail: err => {
+          console.error('[云函数] [login] 调用失败', err)
+          // wx.navigateTo({
+          //   url: '../deployFunctions/deployFunctions',
+          // })
+        }
+      })
+    }
   },
 
   /**
